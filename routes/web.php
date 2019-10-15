@@ -16,3 +16,4 @@ Route::get('/', function () {
 });
 
 Route::view('dashboard', 'app.dashboard');
+Route::view('kirimsurat', 'opd.index')->name('kirim-surat');
