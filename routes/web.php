@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'Auth\LoginController@showLoginForm');
+Route::post('login', 'Auth\LoginController@login')->name('login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::view('dashboard', 'app.dashboard');
+Route::view('dashboard', 'app.dashboard')->name('dashboard')->middleware('role:admin');
