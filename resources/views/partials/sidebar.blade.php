@@ -8,8 +8,9 @@
   <ul class="sidebar-menu">
     <li class="menu-header">Dashboard</li>
     <li class="{{ request()->is('/dashboard/*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('dashboard') }}"><i class="fa fa-columns"></i> <span>Dashboard</span></a></li>
-    <li class="{{ request()->is('table') ? 'active' : '' }}"><a href="{{ url('table') }}"><i class="fa fa-table"></i> <span>Tables</span></a></li>
+    <li><a class="nav-link" href=""><i class="fa fa-users"></i> <span>Kirim Surat</span></a></li>
+    <li><a class="nav-link" href=""><i class="fa fa-users"></i> <span>Cek Surat</span></a></li>
     <li class="menu-header">Users</li>
-    <li><a class="nav-link" href=""><i class="fa fa-users"></i> <span>Users</span></a></li>
+    <li><a class="nav-link" href=""><i class="fa fa-users"></i> <span>User</span></a></li>
   </ul>
 </aside>

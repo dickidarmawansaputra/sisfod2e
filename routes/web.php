@@ -16,3 +16,4 @@ Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::view('dashboard', 'app.dashboard')->name('dashboard')->middleware('role:admin');
+Route::view('kirimsurat', 'opd.index')->name('kirim-surat');
