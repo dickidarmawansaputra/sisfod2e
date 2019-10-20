@@ -8,12 +8,12 @@ class Surat extends Model
 {
     protected $table = "surat";
     protected $fillable = [
-    						'no_surat',
-    						'perihal_surat',
-    						'tgl_surat',
-    						'pengirim',
-    						'jenis_surat',
-    						'deskripsi',
-    						'gambar'
-    					  ];
+        'no_surat',
+        'perihal_surat',
+        'tgl_surat',
+        'pengirim',
+        'jenis_surat',
+        'deskripsi',
+        'gambar'
+    ];
 }
