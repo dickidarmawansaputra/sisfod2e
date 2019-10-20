@@ -48,9 +48,7 @@ return [
             'host' => '',
             'username' => '',
             'password' => '',
-            'port' => 22,
             'root' => '',
-            'timeout' => 30,
         ],
 
         'local' => [

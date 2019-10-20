@@ -23,9 +23,14 @@ Route::middleware('auth')->group(function() {
 	Route::post('upload-surat/simpan', 'SuratController@store')->name('upload-surat.store');
 	Route::post('move/server', 'SuratController@moveFileToServer')->name('move.server');
 
-	Route::get('config', 'ConfigController@index')->name('config');
-	Route::post('config/store', 'ConfigController@config')->name('config.store');
+	Route::get('kirim-surat', 'SuratController@kirimSurat')->name('kirim-surat');
+	Route::get('kirim-surat/data', 'SuratController@dataKirim')->name('kirim-surat.data');
 
+	Route::get('config', 'ConfigController@index')->name('config');
+	Route::get('config/data', 'ConfigController@data')->name('config.data');
+	Route::post('config/store', 'ConfigController@store')->name('config.store');
+	Route::put('config/update', 'ConfigController@update')->name('config.update');
+	Route::post('config/destroy/{id}', 'ConfigController@destroy')->name('config.destroy');
 
 	Route::get('user', 'UserController@index')->name('user');
 	Route::get('user/data', 'UserController@data')->name('user.data');
