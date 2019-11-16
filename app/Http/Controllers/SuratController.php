@@ -16,7 +16,8 @@ class SuratController extends Controller
         // foreach ($data as $key => $value) {
         //     $gambar = explode(",", $value->gambar);
         // }
-		return view('surat.index');
+        $config = Config::all();
+		return view('surat.index', compact('config'));
 	}
 
     public function store(Request $request)
@@ -79,7 +80,7 @@ class SuratController extends Controller
 
     public function kirim(Request $request)
     {
-        $sftp = Config::find($request->kirim)->first();
+        $sftp = Config::find($request->tujuan)->first();
         config(['filesystems.disks.sftp.host' => $sftp->host]);
         config(['filesystems.disks.sftp.username' => $sftp->username]);
         config(['filesystems.disks.sftp.password' => $sftp->password]);
@@ -93,6 +94,8 @@ class SuratController extends Controller
         // $surat = Storage::get();
 
         $data = $request->all();
+        $data['jenis_surat'] = $sftp->id;
+        // return$request->gambar;
         if ($request->hasFile('gambar')) {
             $fileName = $request->gambar->getClientOriginalName();
             $path = Storage::disk('sftp')->put($fileName, fopen($request->gambar, 'r+'));

@@ -43,7 +43,19 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-6">
+                  <div class="form-group col-6">
+                      <label>Tujuan Surat</label>
+                      <select name="tujuan" class="form-control" required>
+                        <option value="" selected="" disabled="">Pilih</option>
+                        @foreach($config as $val)
+                        <option value="{{ $val->id }}">{{ $val->nama_config }}</option>
+                        @endforeach
+                      </select>
+                      <div class="invalid-feedback">
+                        Data tidak boleh kosong!
+                      </div>
+                  </div>
+                    {{-- <div class="form-group col-6">
                         <label>Jenis Surat</label>
                         <select name="jenis_surat" class="form-control" required>
                           <option value="" selected="" disabled="">Pilih</option>
@@ -53,7 +65,7 @@
                         <div class="invalid-feedback">
                             Data tidak boleh kosong !
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="form-group col-6">
                         <label>Tanggal Surat</label>
                         <input type="text" name="tgl_surat" class="form-control datepicker" required placeholder="Tanggal Surat">
@@ -74,7 +86,7 @@
                 <div class="row">
                   <div class="form-group col-12">
                     <label>Gambar</label>
-                    <input type="file" name="gambar[]" class="form-control" required multiple>
+                    <input type="file" name="gambar" class="form-control" required multiple>
                     <div class="invalid-feedback">
                         Data tidak boleh kosong !
                     </div>
