@@ -104,4 +104,27 @@ class SuratController extends Controller
         return redirect()->back();
 
     }
+
+    // surat masuk
+
+    public function indexSuratMasuk()
+    {
+        return view('surat.cek');
+    }
+
+    public function dataSuratMasuk()
+    {
+        $model = Surat::all();
+
+        return Datatables::of($model)
+            ->addColumn('aksi', function($model) {
+                return '
+                <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#kirim" data-id="'.$model->id.'"><i class="fas fa-paper-plane"></i></button>
+                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-nama_config="'.$model->nama_config.'" data-username="'.$model->username.'" data-password="'.$model->password.'" data-root_path="'.$model->root_path.'"><i class="far fa-edit"></i></button>
+                <button class="btn btn-icon btn-danger btn-sm delete" data-id="'.$model->id.'"><i class="fas fa-trash"></i></button>';
+            })
+            ->rawColumns(['aksi'])
+            ->addIndexColumn()
+            ->make(true);
+    }
 }

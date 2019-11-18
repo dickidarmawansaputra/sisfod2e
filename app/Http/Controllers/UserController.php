@@ -31,7 +31,7 @@ class UserController extends Controller
             })
             ->addColumn('aksi', function($model) {
                 return '
-                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-name="'.$model->name.'" data-email="'.$model->email.'" data-role="'.$model->role->role.'"><i class="far fa-edit"></i></button>
+                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-name="'.$model->name.'" data-email="'.$model->email.'" data-role="'.$model->role->role.'" data-password="'.$model->password.'"><i class="far fa-edit"></i></button>
                 <button class="btn btn-icon btn-danger btn-sm delete" data-id="'.$model->id.'"><i class="fas fa-trash"></i></button>';
             })
 			->rawColumns(['peran', 'aksi'])
@@ -57,9 +57,17 @@ class UserController extends Controller
         $data['password'] = Hash::make($request->password);
         $result = User::find($request->id)->update($data);
 
-        $user_id = $result->id;
-        $data['user_id'] = $user_id;
-        Role::where('user_id', $user_id)->update($data);
+        // $user_id = $result->id;
+        // $data['user_id'] = $user_id;
+        // Role::where('user_id', $user_id)->update($data);
+
+        $role = Role::where('user_id', '=', $request->id)->first();
+        $role->update([
+                    'role' => request('role'),
+        ]);
+
+        // toast('Data berhasil diedit','success');
+        // return redirect()->back();
     }
 
     public function destroy($id)
