@@ -20,7 +20,7 @@ Route::view('kirimsurat', 'opd.index')->name('kirim-surat');
 
 Route::middleware('auth')->group(function() {
 	Route::get('upload-surat', 'SuratController@index')->name('upload-surat');
-	Route::post('upload-surat/simpan', 'SuratController@kirim')->name('upload-surat.store');
+	Route::post('upload-surat/simpan', 'SuratController@store')->name('upload-surat.store');
 	Route::post('move/server', 'SuratController@moveFileToServer')->name('move.server');
 
 	Route::get('kirim-surat', 'SuratController@kirimSurat')->name('kirim-surat');

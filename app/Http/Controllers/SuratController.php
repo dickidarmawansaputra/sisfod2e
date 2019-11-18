@@ -7,17 +7,13 @@ use App\Models\Surat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Crypt;
 
 class SuratController extends Controller
 {
 	public function index()
 	{
-        // $data = Surat::all();
-        // foreach ($data as $key => $value) {
-        //     $gambar = explode(",", $value->gambar);
-        // }
-        $config = Config::all();
-		return view('surat.index', compact('config'));
+		return view('surat.index');
 	}
 
     public function store(Request $request)
@@ -28,14 +24,54 @@ class SuratController extends Controller
         );
         
     	$data = $request->all();
-    	if ($request->hasFile('gambar')) {
-            for ($i=0; $i < count($request->gambar); $i++) { 
-    			$fileName[$i] = $request->gambar[$i]->getClientOriginalName();
-    			$path[$i] = $request->gambar[$i]->storeAs('public/surat', $fileName[$i]);
-                $data['gambar'] = implode(",", $path);
-            }
-    	}
-    	Surat::create($data);
+        if ($request->hasFile('gambar')) {
+            // Fingerprint
+            $fingerprint = md5_file($request->gambar);
+
+            // Create fingerprint text file
+            Storage::disk('local')->put('public/surat/'.$fingerprint.'/'.$fingerprint.'.txt', $fingerprint);
+
+            // Simpan gambar di storage
+            $fileName = $request->gambar->getClientOriginalName();
+            $path = $request->file('gambar')->storeAs('public/surat/'.$fingerprint.'', $fileName);
+            $data['gambar'] = $path;
+        }
+
+        // RSA
+        $rsa = new \phpseclib\Crypt\RSA();
+        $key = $rsa->createKey();
+
+        // .pem File
+        $private = Storage::disk('local')->put('public/surat/'.$fingerprint.'/'.'private_key.pem', $key['privatekey']);
+        $public = Storage::disk('local')->put('public/surat/'.$fingerprint.'/'.'public_key.pem', $key['publickey']);
+
+        // Get Key .pem
+        $private_key = Storage::disk('local')->get('public/surat/'.$fingerprint.'/private_key.pem');
+        $public_key = Storage::disk('local')->get('public/surat/'.$fingerprint.'/public_key.pem');
+
+        // Enkripsi RSA dengan private key dan fingerprint
+        $rsa->loadKey($private_key);
+        $enkripsi_rsa = $rsa->encrypt($fingerprint);
+
+        // UNTUK DEKRIP
+        // $rsa->loadKey($public_key);
+        // return$rsa->decrypt($enkripsi_rsa);
+
+
+        // AES
+        $aes = new \phpseclib\Crypt\AES();
+        $enkripsi_aes = $aes->encrypt($fingerprint);
+
+        // ABIS ITU DI ZIP IMAGE & DIGISIGN
+        $zipper = new \Chumper\Zipper\Zipper;
+        $zipper->make(storage_path('app/public/surat/'.$fingerprint.'.zip'))->folder('public/')->add($gambar);
+        $zipper->close();
+
+        
+        dd($zipper);
+
+
+    	// Surat::create($data);
         toast('Data berhasil ditambahkan','success');
         return redirect()->back();
     }
