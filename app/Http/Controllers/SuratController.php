@@ -62,14 +62,28 @@ class SuratController extends Controller
         $aes = new \phpseclib\Crypt\AES();
         $enkripsi_aes = $aes->encrypt($fingerprint);
 
-        // ABIS ITU DI ZIP IMAGE & DIGISIGN
+        // Proses zip file
         $zipper = new \Chumper\Zipper\Zipper;
-        $zipper->make(storage_path('app/public/surat/'.$fingerprint.'.zip'))->folder('public/')->add($path);
+        $files = glob(storage_path('app/public/surat/'.$fingerprint.'/*'));
+        $hasil = $zipper->make(storage_path('app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip'))->folder($fingerprint.'/')->add($files);
         $zipper->close();
 
-        
-        dd($zipper);
+        config(['filesystems.disks.sftp.host' => '34.87.51.218']);
+        config(['filesystems.disks.sftp.username' => 'root']);
+        config(['filesystems.disks.sftp.password' => 'sisfo2014xzeth']);
+        config(['filesystems.disks.sftp.root' => '/home/zethlabs.id/html/public']);
+        $host = config('filesystems.disks.sftp.host');
+        $username = config('filesystems.disks.sftp.username');
+        $password = config('filesystems.disks.sftp.password');
+        $root = config('filesystems.disks.sftp.root');
 
+        // Dapatkan zip file baru dikirim
+
+        $filezip = Storage::url('public/surat/'.$fingerprint.'/'.$fingerprint.'.zip');
+
+        if ($filezip) {
+            $path = Storage::disk('sftp')->put(basename($filezip), fopen('../storage/app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip', 'r+'));
+        }
 
     	// Surat::create($data);
         toast('Data berhasil ditambahkan','success');
@@ -123,5 +137,28 @@ class SuratController extends Controller
         toast('Surat berhasil dikirim','success');
         return redirect()->back();
 
+    }
+
+    // surat masuk
+
+    public function indexSuratMasuk()
+    {
+        return view('surat.cek');
+    }
+
+    public function dataSuratMasuk()
+    {
+        $model = Surat::all();
+
+        return Datatables::of($model)
+            ->addColumn('aksi', function($model) {
+                return '
+                <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#kirim" data-id="'.$model->id.'"><i class="fas fa-paper-plane"></i></button>
+                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-nama_config="'.$model->nama_config.'" data-username="'.$model->username.'" data-password="'.$model->password.'" data-root_path="'.$model->root_path.'"><i class="far fa-edit"></i></button>
+                <button class="btn btn-icon btn-danger btn-sm delete" data-id="'.$model->id.'"><i class="fas fa-trash"></i></button>';
+            })
+            ->rawColumns(['aksi'])
+            ->addIndexColumn()
+            ->make(true);
     }
 }

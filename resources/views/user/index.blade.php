@@ -109,8 +109,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="needs-validation" method="POST" action="" novalidate>
+        <form class="needs-validation" method="POST" action="{{ route('user.update') }}" novalidate>
           @csrf
+          @method('PUT')
           <input type="hidden" name="id" id="id">
           <div class="row">
             <div class="form-group col-6">
@@ -143,7 +144,7 @@
             </div>
             <div class="form-group col-6">
                 <label>Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Password" required>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
                 <div class="invalid-feedback">
                   Data tidak boleh kosong!
                 </div>
@@ -188,6 +189,7 @@ $('#update').on('show.bs.modal', function(event){
     $('#id').val(id);
     $('#name').val(name);
     $('#email').val(email);
+    $('#password').val(password);
     $('#role').val(role).change();
 });
 </script>
