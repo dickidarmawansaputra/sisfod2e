@@ -64,7 +64,7 @@ class SuratController extends Controller
 
         // ABIS ITU DI ZIP IMAGE & DIGISIGN
         $zipper = new \Chumper\Zipper\Zipper;
-        $zipper->make(storage_path('app/public/surat/'.$fingerprint.'.zip'))->folder('public/')->add($gambar);
+        $zipper->make(storage_path('app/public/surat/'.$fingerprint.'.zip'))->folder('public/')->add($path);
         $zipper->close();
 
         
@@ -74,22 +74,6 @@ class SuratController extends Controller
     	// Surat::create($data);
         toast('Data berhasil ditambahkan','success');
         return redirect()->back();
-    }
-
-    public function moveFileToServer(Request $request)
-    {
-        $host = putenv('SFTP_HOST=127.0.0.1'); // Contoh
-        $username = putenv('SFTP_USERNAME=root'); // Contoh
-        $password = putenv('SFTP_PASSWORD=secret'); // Contoh
-        $dotenv = Dotenv::create('..');
-        $dotenv->load();
-
-        $data = $request->all();
-        if ($request->hasFile('gambar')) {
-            $fileName = $request->gambar->getClientOriginalName();
-            $path = Storage::disk('sftp')->put($fileName, fopen($request->gambar, 'r+'));
-        }
-        return 'berhasil';
     }
 
     public function kirimSurat()
