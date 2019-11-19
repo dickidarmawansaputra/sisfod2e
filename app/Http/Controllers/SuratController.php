@@ -62,34 +62,32 @@ class SuratController extends Controller
         $aes = new \phpseclib\Crypt\AES();
         $enkripsi_aes = $aes->encrypt($fingerprint);
 
-        // ABIS ITU DI ZIP IMAGE & DIGISIGN
-        // $zipper = new \Chumper\Zipper\Zipper;
-        // $zipper->make(storage_path('app/public/surat/'.$fingerprint.'.zip'))->folder('public/')->add($gambar);
-        // $zipper->close();
+        // Proses zip file
+        $zipper = new \Chumper\Zipper\Zipper;
+        $files = glob(storage_path('app/public/surat/'.$fingerprint.'/*'));
+        $hasil = $zipper->make(storage_path('app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip'))->folder($fingerprint.'/')->add($files);
+        $zipper->close();
 
-        
-        // dd($zipper);
+        config(['filesystems.disks.sftp.host' => '']);
+        config(['filesystems.disks.sftp.username' => 'root']);
+        config(['filesystems.disks.sftp.password' => '']);
+        config(['filesystems.disks.sftp.root' => '/home/zethlabs.id/html/public']);
+        $host = config('filesystems.disks.sftp.host');
+        $username = config('filesystems.disks.sftp.username');
+        $password = config('filesystems.disks.sftp.password');
+        $root = config('filesystems.disks.sftp.root');
 
+        // Dapatkan zip file baru dikirim
+
+        $filezip = Storage::url('public/surat/'.$fingerprint.'/'.$fingerprint.'.zip');
+
+        if ($filezip) {
+            $path = Storage::disk('sftp')->put(basename($filezip), fopen('../storage/app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip', 'r+'));
+        }
 
     	// Surat::create($data);
         toast('Data berhasil ditambahkan','success');
         return redirect()->back();
-    }
-
-    public function moveFileToServer(Request $request)
-    {
-        $host = putenv('SFTP_HOST=127.0.0.1'); // Contoh
-        $username = putenv('SFTP_USERNAME=root'); // Contoh
-        $password = putenv('SFTP_PASSWORD=secret'); // Contoh
-        $dotenv = Dotenv::create('..');
-        $dotenv->load();
-
-        $data = $request->all();
-        if ($request->hasFile('gambar')) {
-            $fileName = $request->gambar->getClientOriginalName();
-            $path = Storage::disk('sftp')->put($fileName, fopen($request->gambar, 'r+'));
-        }
-        return 'berhasil';
     }
 
     public function kirimSurat()
