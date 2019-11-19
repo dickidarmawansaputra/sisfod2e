@@ -5,6 +5,7 @@
 @push('stylesheet')
 <link rel="stylesheet" type="text/css" href="{{ asset('datatables/datatables.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
+<link rel="stylesheet" href="{{ asset('bootstrap-daterangepicker/daterangepicker.css') }}">
 @endpush
 
 @section('content')
@@ -87,50 +88,59 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit Pengguna</h5>
+        <h5 class="modal-title">Edit Keterangan Surat</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form class="needs-validation" method="POST" action="" novalidate>
+        <form class="needs-validation" method="POST" action="{{ route('surat.update') }}" novalidate>
           @csrf
+          @method('PUT')
           <input type="hidden" name="id" id="id">
           <div class="row">
             <div class="form-group col-6">
-                <label>Nama</label>
-                <input type="text" class="form-control" name="name" id="name" placeholder="Nama" required>
+                <label>Nomor Surat</label>
+                <input type="text" name="no_surat" class="form-control" id="no_surat" required placeholder="Nomor Surat">
                 <div class="invalid-feedback">
-                  Data tidak boleh kosong!
+                    Data tidak boleh kosong !
                 </div>
             </div>
             <div class="form-group col-6">
-                <label>Email</label>
-                <input type="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                <label>Perihal Surat</label>
+                <input type="text" name="perihal_surat" class="form-control" id="perihal_surat" required placeholder="Perihal Surat">
                 <div class="invalid-feedback">
-                  Data tidak boleh kosong!
+                    Data tidak boleh kosong !
                 </div>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-6">
-                <label>Hak Akses</label>
-                <select name="role" id="role" class="form-control" required>
+                <label>Jenis Surat</label>
+                <select name="jenis_surat"  id="jenis_surat" class="form-control" required>
                   <option value="" selected="" disabled="">Pilih</option>
-                  <option value="admin">Admin</option>
-                  <option value="operator">Operator</option>
-                  <option value="opd">OPD</option>
+                  <option value="surat undangan">Surat Undangan</option>
+                  <option value="surat perintah">Surat Perintah</option>
                 </select>
                 <div class="invalid-feedback">
-                  Data tidak boleh kosong!
+                    Data tidak boleh kosong !
                 </div>
             </div>
             <div class="form-group col-6">
-                <label>Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Password" required>
+                <label>Tanggal Surat</label>
+                <input type="text" name="tgl_surat" class="form-control datepicker" id="tgl_surat" required placeholder="Tanggal Surat">
                 <div class="invalid-feedback">
-                  Data tidak boleh kosong!
+                    Data tidak boleh kosong !
                 </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12">
+              <label>Deskripsi</label>
+              <textarea name="deskripsi" class="form-control" id="deskripsi" required placeholder="Deskripsi"></textarea>
+              <div class="invalid-feedback">
+                  Data tidak boleh kosong !
+              </div>
             </div>
           </div>
           <div class="modal-footer bg-whitesmoke br">
@@ -146,6 +156,13 @@
 @push('javascript')
 <script src="{{ asset('datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script>
+  $('.datepicker').daterangepicker({
+          locale: {format: 'YYYY-MM-DD'},
+          singleDatePicker: true,
+        });
+</script>
 <script>
 $(function() {
     $('#tabel').DataTable({
@@ -167,13 +184,17 @@ $(function() {
 $('#update').on('show.bs.modal', function(event){
     var row = $(event.relatedTarget);
     var id = row.data('id');
-    var name = row.data('name');
-    var email = row.data('email');
-    var role = row.data('role');
+    var no_surat = row.data('no_surat');
+    var perihal_surat = row.data('perihal_surat');
+    var tgl_surat = row.data('tgl_surat');
+    var jenis_surat = row.data('jenis_surat');
+    var deskripsi = row.data('deskripsi');
     $('#id').val(id);
-    $('#name').val(name);
-    $('#email').val(email);
-    $('#role').val(role).change();
+    $('#no_surat').val(no_surat);
+    $('#perihal_surat').val(perihal_surat);
+    $('#tgl_surat').val(tgl_surat);
+    $('#jenis_surat').val(jenis_surat);
+    $('#deskripsi').val(deskripsi).change();
 });
 </script>
 <script>

@@ -25,6 +25,11 @@ Route::middleware('auth')->group(function() {
 
 	Route::get('kirim-surat', 'SuratController@kirimSurat')->name('kirim-surat');
 	Route::get('kirim-surat/data', 'SuratController@dataKirim')->name('kirim-surat.data');
+	Route::put('kirim-surat/update', 'SuratController@update')->name('surat.update');
+	// Route::post('kirim-surat/destroy/{id}', 'SuratController@destroy')->name('surat.destroy');
+
+	Route::get('surat-masuk', 'SuratController@indexSuratMasuk')->name('surat-masuk');
+	Route::get('surat-masuk/data', 'SuratController@dataSuratMasuk')->name('surat-masuk.data');
 
 	Route::get('config', 'ConfigController@index')->name('config');
 	Route::get('config/data', 'ConfigController@data')->name('config.data');

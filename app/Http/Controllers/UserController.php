@@ -66,8 +66,8 @@ class UserController extends Controller
                     'role' => request('role'),
         ]);
 
-        // toast('Data berhasil diedit','success');
-        // return redirect()->back();
+        toast('Data berhasil diedit','success');
+        return redirect()->back();
     }
 
     public function destroy($id)

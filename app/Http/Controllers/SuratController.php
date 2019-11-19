@@ -63,12 +63,12 @@ class SuratController extends Controller
         $enkripsi_aes = $aes->encrypt($fingerprint);
 
         // ABIS ITU DI ZIP IMAGE & DIGISIGN
-        $zipper = new \Chumper\Zipper\Zipper;
-        $zipper->make(storage_path('app/public/surat/'.$fingerprint.'.zip'))->folder('public/')->add($gambar);
-        $zipper->close();
+        // $zipper = new \Chumper\Zipper\Zipper;
+        // $zipper->make(storage_path('app/public/surat/'.$fingerprint.'.zip'))->folder('public/')->add($gambar);
+        // $zipper->close();
 
         
-        dd($zipper);
+        // dd($zipper);
 
 
     	// Surat::create($data);
@@ -106,7 +106,7 @@ class SuratController extends Controller
             ->addColumn('aksi', function($model) {
                 return '
                 <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#kirim" data-id="'.$model->id.'"><i class="fas fa-paper-plane"></i></button>
-                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-nama_config="'.$model->nama_config.'" data-username="'.$model->username.'" data-password="'.$model->password.'" data-root_path="'.$model->root_path.'"><i class="far fa-edit"></i></button>
+                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-no_surat="'.$model->no_surat.'" data-perihal_surat="'.$model->perihal_surat.'" data-jenis_surat="'.$model->jenis_surat.'" data-deskripsi="'.$model->deskripsi.'"><i class="far fa-edit"></i></button>
                 <button class="btn btn-icon btn-danger btn-sm delete" data-id="'.$model->id.'"><i class="fas fa-trash"></i></button>';
             })
             ->rawColumns(['aksi'])
@@ -145,7 +145,8 @@ class SuratController extends Controller
 
     public function indexSuratMasuk()
     {
-        return view('surat.cek');
+        $config = Config::all();
+        return view('surat.cek', compact('config'));
     }
 
     public function dataSuratMasuk()
@@ -155,12 +156,46 @@ class SuratController extends Controller
         return Datatables::of($model)
             ->addColumn('aksi', function($model) {
                 return '
-                <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#kirim" data-id="'.$model->id.'"><i class="fas fa-paper-plane"></i></button>
-                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-nama_config="'.$model->nama_config.'" data-username="'.$model->username.'" data-password="'.$model->password.'" data-root_path="'.$model->root_path.'"><i class="far fa-edit"></i></button>
-                <button class="btn btn-icon btn-danger btn-sm delete" data-id="'.$model->id.'"><i class="fas fa-trash"></i></button>';
+                <button class="btn btn-icon btn-info btn-sm" data-toggle="modal" data-target="#get-key" data-id="'.$model->id.'"><i class="fas fa-key"></i></button>
+
+                <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#unduh" data-id="'.$model->id.'"><i class="fas fa-download" desabled></i></button>
+                
+                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#detail"  data-id="'.$model->id.'" data-no_surat="'.$model->no_surat.'" data-perihal_surat="'.$model->perihal_surat.'" data-jenis_surat="'.$model->jenis_surat.'" data-deskripsi="'.$model->deskripsi.'"><i class="fas fa-eye"></i></button>';
             })
             ->rawColumns(['aksi'])
             ->addIndexColumn()
             ->make(true);
     }
+
+    // update keterangan surat
+    public function update(Request $request)
+    {
+        $data = $request->all();
+        $result = Surat::find($request->id)->update($data);
+        toast('Data Keterangan Surat Berhasil diedit','success');
+        return redirect()->back();
+    }
+
+    // hapus surat
+    public function destroy($id)
+    {
+        Surat::find($id)->delete();
+        return redirect()->back();
+    }
+
+    // public function dataKirim()
+    // {
+    //     $model = Surat::all();
+
+    //     return Datatables::of($model)
+    //         ->addColumn('aksi', function($model) {
+    //             return '
+    //             <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#kirim" data-id="'.$model->id.'"><i class="fas fa-paper-plane"></i></button>
+    //             <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-nama_config="'.$model->nama_config.'" data-username="'.$model->username.'" data-password="'.$model->password.'" data-root_path="'.$model->root_path.'"><i class="far fa-edit"></i></button>
+    //             <button class="btn btn-icon btn-danger btn-sm delete" data-id="'.$model->id.'"><i class="fas fa-trash"></i></button>';
+    //         })
+    //         ->rawColumns(['aksi'])
+    //         ->addIndexColumn()
+    //         ->make(true);
+    // }
 }

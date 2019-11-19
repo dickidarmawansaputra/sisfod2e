@@ -38,52 +38,84 @@
   </div>
 </section>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="kirim">
+<div class="modal fade" tabindex="-1" role="dialog" id="get-key">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Surat Masuk</h5>
+        <h5 class="modal-title">Request Kunci</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form class="needs-validation" method="POST" action="{{ route('user.store') }}" novalidate>
-          @csrf
-          <div class="row">
-            <div class="form-group col-12">
-                <label>Tujuan Surat</label>
-                <select name="tujuan" class="form-control" required>
-                  <option value="" selected="" disabled="">Pilih</option>
-                  @foreach($config as $val)
-                  <option value="{{ $val->id }}">{{ $val->nama_config }}</option>
-                  @endforeach
-                </select>
-                <div class="invalid-feedback">
-                  Data tidak boleh kosong!
-                </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-12">
-                <label>Pesan</label>
-                <textarea name="pesan" class="form-control" required placeholder="Pesan" style="height: 100px;"></textarea>
-                <div class="invalid-feedback">
-                  Data tidak boleh kosong!
-                </div>
-            </div>
-          </div>
-          <div class="modal-footer bg-whitesmoke br">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
-            <button type="submit" class="btn btn-primary">Kirim</button>
-          </div>
-        </form>
+        
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="update">
+<div class="modal fade" tabindex="-1" role="dialog" id="detail">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Keterangan Surat</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <input type="hidden" name="id" id="id">
+          <div class="row">
+            <div class="form-group col-6">
+                <label>Nomor Surat</label>
+                <input type="text" name="no_surat" class="form-control" id="no_surat" placeholder="Nomor Surat">
+                <div class="invalid-feedback">
+                    Data tidak boleh kosong !
+                </div>
+            </div>
+            <div class="form-group col-6">
+                <label>Perihal Surat</label>
+                <input type="text" name="perihal_surat" class="form-control" id="perihal_surat" placeholder="Perihal Surat">
+                <div class="invalid-feedback">
+                    Data tidak boleh kosong !
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-6">
+                <label>Jenis Surat</label>
+                <select name="jenis_surat"  id="jenis_surat" class="form-control">
+                  <option value="" selected="" disabled="">Pilih</option>
+                  <option value="surat undangan">Surat Undangan</option>
+                  <option value="surat perintah">Surat Perintah</option>
+                </select>
+                <div class="invalid-feedback">
+                    Data tidak boleh kosong !
+                </div>
+            </div>
+            <div class="form-group col-6">
+                <label>Tanggal Surat</label>
+                <input type="text" name="tgl_surat" class="form-control datepicker" id="tgl_surat" placeholder="Tanggal Surat">
+                <div class="invalid-feedback">
+                    Data tidak boleh kosong !
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-12">
+              <label>Deskripsi</label>
+              <textarea name="deskripsi" class="form-control" id="deskripsi" placeholder="Deskripsi"></textarea>
+              <div class="invalid-feedback">
+                  Data tidak boleh kosong !
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="modal fade" tabindex="-1" role="dialog" id="detail">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -141,7 +173,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 @endsection
 @push('javascript')
 <script src="{{ asset('datatables/datatables.min.js') }}"></script>
@@ -151,7 +183,7 @@ $(function() {
     $('#tabel').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '{!! route('kirim-surat.data') !!}',
+        ajax: '{!! route('surat-masuk.data') !!}',
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex' },
             { data: 'no_surat', name: 'no_surat' },
@@ -164,17 +196,20 @@ $(function() {
 });
 </script>
 <script>
-$('#update').on('show.bs.modal', function(event){
+$('#detail').on('show.bs.modal', function(event){
     var row = $(event.relatedTarget);
     var id = row.data('id');
-    var name = row.data('name');
-    var email = row.data('email');
-    var role = row.data('role');
+    var no_surat = row.data('no_surat');
+    var perihal_surat = row.data('perihal_surat');
+    var tgl_surat = row.data('tgl_surat');
+    var jenis_surat = row.data('jenis_surat');
+    var deskripsi = row.data('deskripsi');
     $('#id').val(id);
-    $('#name').val(name);
-    $('#email').val(email);
-    $('#password').val(password);
-    $('#role').val(role).change();
+    $('#no_surat').val(no_surat);
+    $('#perihal_surat').val(perihal_surat);
+    $('#tgl_surat').val(tgl_surat);
+    $('#jenis_surat').val(jenis_surat);
+    $('#deskripsi').val(deskripsi);
 });
 </script>
 <script>
