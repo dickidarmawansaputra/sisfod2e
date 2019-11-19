@@ -63,12 +63,39 @@ class SuratController extends Controller
         $enkripsi_aes = $aes->encrypt($fingerprint);
 
         // ABIS ITU DI ZIP IMAGE & DIGISIGN
+        // $zip = new ZipArchive();
+        // $filename = storage_path('app/public/surat/'.$fingerprint.'.zip');
+        // if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
+        //     exit("cannot open <$filename>\n");
+        // }
         $zipper = new \Chumper\Zipper\Zipper;
-        $zipper->make(storage_path('app/public/surat/'.$fingerprint.'.zip'))->folder('public/')->add($gambar);
+        $files = glob(storage_path('app/public/surat/'.$fingerprint.'/*'));
+        $zipper->make(storage_path('app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip'))->folder($fingerprint.'/')->add($files);
         $zipper->close();
 
+        // dd($zipper);
+        //copy ke server
+        // $sftp = Config::find($request->tujuan)->first();
+        config(['filesystems.disks.sftp.host' => 'ranthus.me']);
+        config(['filesystems.disks.sftp.username' => 'root']);
+        config(['filesystems.disks.sftp.password' => 'sisfo2014xzeth']);
+        config(['filesystems.disks.sftp.root' => 'teset']);
+        $host = config('filesystems.disks.sftp.host');
+        $username = config('filesystems.disks.sftp.username');
+        $password = config('filesystems.disks.sftp.password');
+        $root = config('filesystems.disks.sftp.root');
+
+        // Dapatkan surat baru dikirim
+        // $surat = Storage::get();
+
+        $filezip = Storage::disk('local')->download('public/surat/'.$fingerprint.'/'.$fingerprint.'.zip');
+
+        // return($filezip);
         
-        dd($zipper);
+        // return$request->gambar;
+        // if ($filezip) {
+        //     $path = Storage::disk('sftp')->put('/', fopen($filezip, 'w+'));
+        // }
 
 
     	// Surat::create($data);
