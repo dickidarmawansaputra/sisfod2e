@@ -68,9 +68,9 @@ class SuratController extends Controller
         $hasil = $zipper->make(storage_path('app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip'))->folder($fingerprint.'/')->add($files);
         $zipper->close();
 
-        config(['filesystems.disks.sftp.host' => '34.87.51.218']);
+        config(['filesystems.disks.sftp.host' => '']);
         config(['filesystems.disks.sftp.username' => 'root']);
-        config(['filesystems.disks.sftp.password' => 'sisfo2014xzeth']);
+        config(['filesystems.disks.sftp.password' => '']);
         config(['filesystems.disks.sftp.root' => '/home/zethlabs.id/html/public']);
         $host = config('filesystems.disks.sftp.host');
         $username = config('filesystems.disks.sftp.username');
