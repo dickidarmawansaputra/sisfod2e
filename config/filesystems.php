@@ -43,12 +43,17 @@ return [
 
     'disks' => [
 
+<<<<<<< HEAD
         'ftp' => [
+=======
+        'sftp' => [
+>>>>>>> 63b24a498a8abc16e77e5b5bc2cb552716691b18
             'driver' => 'ftp',
             'host' => '',
             'username' => '',
             'password' => '',
             'root' => '',
+            'port' => '21',
         ],
 
         'local' => [

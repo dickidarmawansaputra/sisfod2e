@@ -76,6 +76,15 @@ class SuratController extends Controller
         // $username = config('filesystems.disks.sftp.username');
         // $password = config('filesystems.disks.sftp.password');
         // $root = config('filesystems.disks.sftp.root');
+        config(['filesystems.disks.sftp.host' => '36.91.27.226']);
+        config(['filesystems.disks.sftp.username' => 'suandiftp']);
+        config(['filesystems.disks.sftp.password' => 'osahnakberagambah']);
+        config(['filesystems.disks.sftp.root' => '/ftp/filerepo']);
+        config(['filesystems.disks.sftp.port' => '21']);
+        $host = config('filesystems.disks.sftp.host');
+        $username = config('filesystems.disks.sftp.username');
+        $password = config('filesystems.disks.sftp.password');
+        $root = config('filesystems.disks.sftp.root');
 
         // Dapatkan zip file baru dikirim
 
@@ -126,6 +135,16 @@ class SuratController extends Controller
         $url = str_replace("/storage", "storage", Storage::disk('local')->url($request->surat));
         $path = Storage::disk('ftp')->put($request->surat, fopen($url, 'r+'));
         
+        // config(['filesystems.disks.sftp.host' => '36.91.27.226']);
+        // config(['filesystems.disks.sftp.username' => 'suandiftp']);
+        // config(['filesystems.disks.sftp.password' => 'osahnakberagambah']);
+        // config(['filesystems.disks.sftp.root' => '/ftp/filerepo']);
+        // config(['filesystems.disks.sftp.port' => '21']);
+        // $host = config('filesystems.disks.sftp.host');
+        // $username = config('filesystems.disks.sftp.username');
+        // $password = config('filesystems.disks.sftp.password');
+        // $root = config('filesystems.disks.sftp.root');
+
         toast('Surat berhasil dikirim','success');
         return redirect()->back();
 
