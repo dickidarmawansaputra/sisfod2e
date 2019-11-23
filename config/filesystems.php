@@ -44,11 +44,12 @@ return [
     'disks' => [
 
         'sftp' => [
-            'driver' => 'sftp',
+            'driver' => 'ftp',
             'host' => '',
             'username' => '',
             'password' => '',
             'root' => '',
+            'port' => '21',
         ],
 
         'local' => [

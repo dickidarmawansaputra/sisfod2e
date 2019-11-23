@@ -13,14 +13,16 @@
 
 Route::get('/', 'Auth\LoginController@showLoginForm');
 Route::post('login', 'Auth\LoginController@login')->name('login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
 
 Route::middleware('auth')->group(function() {
-	Route::view('dashboard', 'app.dashboard')->name('dashboard')->middleware('role:admin');
+	// Route::view('dashboard', 'app.dashboard')->name('dashboard')->middleware('role:admin');
+	Route::view('dashboard', 'app.dashboard')->name('dashboard');
 	
 	Route::get('upload-surat', 'SuratController@index')->name('upload-surat');
 	Route::post('upload-surat/simpan', 'SuratController@store')->name('upload-surat.store');
+	// Route::post('upload-surat/simpan', 'SuratController@kirim')->name('upload-surat.store');
 
 	Route::get('kirim-surat', 'SuratController@kirimSurat')->name('kirim-surat');
 	Route::get('kirim-surat/data', 'SuratController@dataKirim')->name('kirim-surat.data');

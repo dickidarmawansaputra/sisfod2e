@@ -68,10 +68,11 @@ class SuratController extends Controller
         $hasil = $zipper->make(storage_path('app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip'))->folder($fingerprint.'/')->add($files);
         $zipper->close();
 
-        config(['filesystems.disks.sftp.host' => '']);
-        config(['filesystems.disks.sftp.username' => 'root']);
-        config(['filesystems.disks.sftp.password' => '']);
-        config(['filesystems.disks.sftp.root' => '/home/zethlabs.id/html/public']);
+        config(['filesystems.disks.sftp.host' => '36.91.27.226']);
+        config(['filesystems.disks.sftp.username' => 'suandiftp']);
+        config(['filesystems.disks.sftp.password' => 'osahnakberagambah']);
+        config(['filesystems.disks.sftp.root' => '/ftp/filerepo']);
+        config(['filesystems.disks.sftp.port' => '21']);
         $host = config('filesystems.disks.sftp.host');
         $username = config('filesystems.disks.sftp.username');
         $password = config('filesystems.disks.sftp.password');
@@ -114,11 +115,21 @@ class SuratController extends Controller
 
     public function kirim(Request $request)
     {
-        $sftp = Config::find($request->tujuan)->first();
-        config(['filesystems.disks.sftp.host' => $sftp->host]);
-        config(['filesystems.disks.sftp.username' => $sftp->username]);
-        config(['filesystems.disks.sftp.password' => $sftp->password]);
-        config(['filesystems.disks.sftp.root' => $sftp->root_path]);
+        // $sftp = Config::find($request->tujuan)->first();
+        // config(['filesystems.disks.sftp.host' => $sftp->host]);
+        // config(['filesystems.disks.sftp.username' => $sftp->username]);
+        // config(['filesystems.disks.sftp.password' => $sftp->password]);
+        // config(['filesystems.disks.sftp.root' => $sftp->root_path]);
+        // $host = config('filesystems.disks.sftp.host');
+        // $username = config('filesystems.disks.sftp.username');
+        // $password = config('filesystems.disks.sftp.password');
+        // $root = config('filesystems.disks.sftp.root');
+
+        config(['filesystems.disks.sftp.host' => '36.91.27.226']);
+        config(['filesystems.disks.sftp.username' => 'suandiftp']);
+        config(['filesystems.disks.sftp.password' => 'osahnakberagambah']);
+        config(['filesystems.disks.sftp.root' => '/ftp/filerepo']);
+        config(['filesystems.disks.sftp.port' => '21']);
         $host = config('filesystems.disks.sftp.host');
         $username = config('filesystems.disks.sftp.username');
         $password = config('filesystems.disks.sftp.password');
@@ -128,7 +139,8 @@ class SuratController extends Controller
         // $surat = Storage::get();
 
         $data = $request->all();
-        $data['jenis_surat'] = $sftp->id;
+        // $data['jenis_surat'] = $sftp->id;
+        $data['jenis_surat'] = 1;
         // return$request->gambar;
         if ($request->hasFile('gambar')) {
             $fileName = $request->gambar->getClientOriginalName();

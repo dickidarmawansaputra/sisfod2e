@@ -12,7 +12,7 @@
     <li><a class="nav-link" href="{{ route('kirim-surat') }}"><i class="fa fa-paper-plane"></i> <span>Kirim Surat</span></a></li>
     <li><a class="nav-link" href="{{ route('surat-masuk') }}"><i class="fa fa-file-alt"></i> <span>Cek Surat</span></a></li>
     <li class="menu-header">Admin</li>
-    <li><a class="nav-link" href="{{ route('config') }}"><i class="fa fa-cog"></i> <span>Konfigurasi</span></a></li>
+    <li><a class="nav-link" href="{{ route('config') }}"><i class="fa fa-cog"></i> <span>Konfigurasi OPD</span></a></li>
     <li><a class="nav-link" href="{{ route('user') }}"><i class="fa fa-users"></i> <span>User</span></a></li>
   </ul>
 </aside>
