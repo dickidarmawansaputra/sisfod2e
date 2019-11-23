@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('datatables/datatables.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('bootstrap-daterangepicker/daterangepicker.css') }}">
+<link rel="stylesheet" href="{{ asset('dropify/dist/css/dropify.min.css') }}">
 @endpush
 
 @section('content')
@@ -49,8 +50,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="needs-validation" method="POST" action="{{ route('user.store') }}" novalidate>
+        <form class="needs-validation" method="POST" action="{{ route('kirim-surat.kirim') }}" enctype="multipart/form-data" novalidate>
           @csrf
+          <input type="hidden" name="id" id="id">
           <div class="row">
             <div class="form-group col-12">
                 <label>Tujuan Surat</label>
@@ -65,7 +67,8 @@
                 </div>
             </div>
           </div>
-          <div class="row">
+          <input type="hidden" name="surat" id="surat">
+          {{-- <div class="row">
             <div class="form-group col-12">
                 <label>Pesan</label>
                 <textarea name="pesan" class="form-control" required placeholder="Pesan" style="height: 100px;"></textarea>
@@ -73,7 +76,7 @@
                   Data tidak boleh kosong!
                 </div>
             </div>
-          </div>
+          </div> --}}
           <div class="modal-footer bg-whitesmoke br">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
             <button type="submit" class="btn btn-primary">Kirim</button>
@@ -143,6 +146,15 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="form-group col-12">
+              <label>Gambar</label>
+              <input type="file" name="gambar" id="gambar" class="dropify" required>
+              <div class="invalid-feedback">
+                  Data tidak boleh kosong !
+              </div>
+            </div>
+          </div>
           <div class="modal-footer bg-whitesmoke br">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
             <button type="submit" class="btn btn-primary">Simpan</button>
@@ -157,7 +169,9 @@
 <script src="{{ asset('datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ asset('dropify/dist/js/dropify.min.js') }}"></script>
 <script>
+  $('.dropify').dropify();
   $('.datepicker').daterangepicker({
           locale: {format: 'YYYY-MM-DD'},
           singleDatePicker: true,
@@ -181,6 +195,15 @@ $(function() {
 });
 </script>
 <script>
+$('#kirim').on('show.bs.modal', function(event){
+    var row = $(event.relatedTarget);
+    var id = row.data('id');
+    var surat = row.data('surat');
+    $('#id').val(id);
+    $('#surat').val(surat);
+});
+</script>
+<script>
 $('#update').on('show.bs.modal', function(event){
     var row = $(event.relatedTarget);
     var id = row.data('id');
@@ -189,12 +212,26 @@ $('#update').on('show.bs.modal', function(event){
     var tgl_surat = row.data('tgl_surat');
     var jenis_surat = row.data('jenis_surat');
     var deskripsi = row.data('deskripsi');
+    var gambar = row.data('gambar');
+    var gambar_file = row.data('gambar_file');
     $('#id').val(id);
     $('#no_surat').val(no_surat);
     $('#perihal_surat').val(perihal_surat);
     $('#tgl_surat').val(tgl_surat);
     $('#jenis_surat').val(jenis_surat);
     $('#deskripsi').val(deskripsi).change();
+    $('#gambar').text(gambar);
+    var imagenUrl = gambar_file;
+    var drEvent = $('#gambar').dropify(
+    {
+      defaultFile: imagenUrl
+    });
+    drEvent = drEvent.data('dropify');
+    drEvent.resetPreview();
+    drEvent.clearElement();
+    drEvent.settings.defaultFile = imagenUrl;
+    drEvent.destroy();
+    drEvent.init();
 });
 </script>
 <script>

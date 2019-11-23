@@ -68,24 +68,24 @@ class SuratController extends Controller
         $hasil = $zipper->make(storage_path('app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip'))->folder($fingerprint.'/')->add($files);
         $zipper->close();
 
-        config(['filesystems.disks.sftp.host' => '']);
-        config(['filesystems.disks.sftp.username' => 'root']);
-        config(['filesystems.disks.sftp.password' => '']);
-        config(['filesystems.disks.sftp.root' => '/home/zethlabs.id/html/public']);
-        $host = config('filesystems.disks.sftp.host');
-        $username = config('filesystems.disks.sftp.username');
-        $password = config('filesystems.disks.sftp.password');
-        $root = config('filesystems.disks.sftp.root');
+        // config(['filesystems.disks.sftp.host' => '']);
+        // config(['filesystems.disks.sftp.username' => 'root']);
+        // config(['filesystems.disks.sftp.password' => '']);
+        // config(['filesystems.disks.sftp.root' => '/home/zethlabs.id/html/public']);
+        // $host = config('filesystems.disks.sftp.host');
+        // $username = config('filesystems.disks.sftp.username');
+        // $password = config('filesystems.disks.sftp.password');
+        // $root = config('filesystems.disks.sftp.root');
 
         // Dapatkan zip file baru dikirim
 
-        $filezip = Storage::url('public/surat/'.$fingerprint.'/'.$fingerprint.'.zip');
+        // $filezip = Storage::url('public/surat/'.$fingerprint.'/'.$fingerprint.'.zip');
 
-        if ($filezip) {
-            $path = Storage::disk('sftp')->put(basename($filezip), fopen('../storage/app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip', 'r+'));
-        }
+        // if ($filezip) {
+        //     $path = Storage::disk('sftp')->put(basename($filezip), fopen('../storage/app/public/surat/'.$fingerprint.'/'.$fingerprint.'.zip', 'r+'));
+        // }
 
-    	// Surat::create($data);
+    	Surat::create($data);
         toast('Data berhasil ditambahkan','success');
         return redirect()->back();
     }
@@ -103,8 +103,8 @@ class SuratController extends Controller
         return Datatables::of($model)
             ->addColumn('aksi', function($model) {
                 return '
-                <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#kirim" data-id="'.$model->id.'"><i class="fas fa-paper-plane"></i></button>
-                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-no_surat="'.$model->no_surat.'" data-perihal_surat="'.$model->perihal_surat.'" data-jenis_surat="'.$model->jenis_surat.'" data-deskripsi="'.$model->deskripsi.'"><i class="far fa-edit"></i></button>
+                <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#kirim" data-id="'.$model->id.'" data-surat="'.$model->gambar.'"><i class="fas fa-paper-plane"></i></button>
+                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-no_surat="'.$model->no_surat.'" data-perihal_surat="'.$model->perihal_surat.'" data-jenis_surat="'.$model->jenis_surat.'" data-tgl_surat="'.$model->tgl_surat.'" data-deskripsi="'.$model->deskripsi.'" data-gambar="'.$model->gambar.'" data-gambar_file="'.Storage::disk('local')->url($model->gambar).'"><i class="far fa-edit"></i></button>
                 <button class="btn btn-icon btn-danger btn-sm delete" data-id="'.$model->id.'"><i class="fas fa-trash"></i></button>';
             })
             ->rawColumns(['aksi'])
@@ -114,26 +114,18 @@ class SuratController extends Controller
 
     public function kirim(Request $request)
     {
-        $sftp = Config::find($request->tujuan)->first();
-        config(['filesystems.disks.sftp.host' => $sftp->host]);
-        config(['filesystems.disks.sftp.username' => $sftp->username]);
-        config(['filesystems.disks.sftp.password' => $sftp->password]);
-        config(['filesystems.disks.sftp.root' => $sftp->root_path]);
-        $host = config('filesystems.disks.sftp.host');
-        $username = config('filesystems.disks.sftp.username');
-        $password = config('filesystems.disks.sftp.password');
-        $root = config('filesystems.disks.sftp.root');
-
-        // Dapatkan surat baru dikirim
-        // $surat = Storage::get();
-
-        $data = $request->all();
-        $data['jenis_surat'] = $sftp->id;
-        // return$request->gambar;
-        if ($request->hasFile('gambar')) {
-            $fileName = $request->gambar->getClientOriginalName();
-            $path = Storage::disk('sftp')->put($fileName, fopen($request->gambar, 'r+'));
-        }
+        $ftp = Config::find($request->tujuan)->first();
+        config(['filesystems.disks.ftp.host' => $ftp->host]);
+        config(['filesystems.disks.ftp.username' => $ftp->username]);
+        config(['filesystems.disks.ftp.password' => $ftp->password]);
+        config(['filesystems.disks.ftp.root' => $ftp->root_path]);
+        $host = config('filesystems.disks.ftp.host');
+        $username = config('filesystems.disks.ftp.username');
+        $password = config('filesystems.disks.ftp.password');
+        $root = config('filesystems.disks.ftp.root');
+        $url = str_replace("/storage", "storage", Storage::disk('local')->url($request->surat));
+        $path = Storage::disk('ftp')->put($request->surat, fopen($url, 'r+'));
+        
         toast('Surat berhasil dikirim','success');
         return redirect()->back();
 

@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function() {
 
 	Route::get('kirim-surat', 'SuratController@kirimSurat')->name('kirim-surat');
 	Route::get('kirim-surat/data', 'SuratController@dataKirim')->name('kirim-surat.data');
+	Route::post('kirim-surat/kirim', 'SuratController@kirim')->name('kirim-surat.kirim');
 	Route::put('kirim-surat/update', 'SuratController@update')->name('surat.update');
 	// Route::post('kirim-surat/destroy/{id}', 'SuratController@destroy')->name('surat.destroy');
 

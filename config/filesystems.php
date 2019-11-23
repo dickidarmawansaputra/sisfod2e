@@ -43,8 +43,8 @@ return [
 
     'disks' => [
 
-        'sftp' => [
-            'driver' => 'sftp',
+        'ftp' => [
+            'driver' => 'ftp',
             'host' => '',
             'username' => '',
             'password' => '',

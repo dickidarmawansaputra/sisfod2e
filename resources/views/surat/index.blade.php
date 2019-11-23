@@ -36,7 +36,7 @@
                     </div>
                     <div class="form-group col-6">
                         <label>Perihal Surat</label>
-                        <input type="text" name="no_surat" class="form-control" required placeholder="Perihal Surat">
+                        <input type="text" name="perihal_surat" class="form-control" required placeholder="Perihal Surat">
                         <div class="invalid-feedback">
                             Data tidak boleh kosong !
                         </div>
