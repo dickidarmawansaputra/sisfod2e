@@ -10,6 +10,7 @@ class ConfigController extends Controller
 {
 	public function index()
 	{
+        // komentar
         $config['nama_opd'] = Config::where('parameter','nama_opd')->first();
         $config['alamat_jaringan'] = Config::where('parameter','alamat_jaringan')->first();
         $config['alamat_pos'] = Config::where('parameter','alamat_pos')->first();
