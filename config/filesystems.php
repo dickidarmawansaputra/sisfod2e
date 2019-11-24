@@ -45,13 +45,12 @@ return [
 
         'ftp' => [
             'driver' => 'ftp',
-            'host' => '',
-            'username' => '',
-            'password' => '',
-            'root' => '',
+            'host' => '36.91.27.226',
+            'username' => 'suandiftp',
+            'password' => 'osahnakberagambah',
+            'root' => '/ftp/filerepo',
             'port' => '21',
         ],
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
