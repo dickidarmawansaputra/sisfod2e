@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Crypt;
+use phpseclib\Crypt\RSA;
 
 class SuratController extends Controller
 {
@@ -207,4 +208,60 @@ class SuratController extends Controller
     //         ->addIndexColumn()
     //         ->make(true);
     // }
+    public function enkrip()
+    {
+        echo "proses enkripsi";
+        $private_key = Storage::disk('local')->get('private_key.pem');
+        $public_key = Storage::disk('local')->get('public_key.pem');
+
+        $rsa = new RSA();
+        //$rsa->setPassword('password');
+        $rsa->loadKey($private_key); // private key
+
+        $plaintext = 'Saya Dian Prawira';
+
+        //$rsa->setSignatureMode(RSA::SIGNATURE_PSS);
+        $signature = $rsa->sign($plaintext);
+        echo $signature;
+        $private = Storage::disk('local')->put('dian.sign', $signature);
+
+        $signature_key = Storage::disk('local')->get('dian.sign');
+
+        $rsa->loadKey($public_key); // private key
+
+
+        // $rsa->loadKey('...'); // public key
+        echo $rsa->verify($plaintext, $signature_key) ? 'verified' : 'unverified';
+        // // Enkripsi RSA dengan private key dan fingerprint
+        // $rsa->loadKey($private_key);
+        // $enkripsi_rsa = $rsa->encrypt($fingerprint);
+    }
+
+    public function dekrip()
+    {
+        echo "proses dekripsi";
+    }
+
+    public function buatkunci()
+    {
+        echo "proses membuat kunci";
+        $rsa = new RSA();
+ 
+        //$rsa->setPrivateKeyFormat(RSA::PRIVATE_FORMAT_PKCS1);
+        //$rsa->setPublicKeyFormat(RSA::PUBLIC_FORMAT_PKCS1);
+
+        //define('CRYPT_RSA_EXPONENT', 65537);
+        //define('CRYPT_RSA_SMALLEST_PRIME', 64); // makes it so multi-prime RSA is used
+        $key = $rsa->createKey(); // == $rsa->createKey(1024) where 1024 is the key size
+        echo "<pre>";
+        echo $key['privatekey'];
+        echo "</pre>";
+        $private = Storage::disk('local')->put('private_key_gue.pem', $key['privatekey']);
+
+
+        echo "<pre>";
+        echo $key['publickey'];
+        echo "</pre>";
+        $private = Storage::disk('local')->put('public_key_gue.pem', $key['publickey']);
+    }
 }
