@@ -18,10 +18,15 @@
         </div>
         <div class="card-body">
           <div class="buttons">
-            <a href="{{ route('config.edit') }}" class="btn btn-icon icon-left btn-primary" ><i class="far fa-edit"></i> Ubah</a>
+            <a href="{{ route('config.edit') }}" class="btn btn-icon icon-left btn-primary" ><i class="fa fa-edit"></i> Ubah</a>
+            <a href="{{ route('crypto.generate') }}" class="btn btn-icon icon-left btn-primary" ><i class="fa fa-key"></i> Buat Kunci</a>
           </div>
           <div class="table-responsive">
             <table class="table table-striped table-hover table-sm" id="tabel">
+                <tr>
+                  <th>Status</th>
+                  <td>{{ $config['server_config_status']->value }}</td>
+                </tr>
                 <tr>
                   <th>Nama OPD</th>
                   <td>{{ $config['nama_opd']->value }}</td>
@@ -38,37 +43,16 @@
                   <th>Email</th>
                   <td>{{ $config['email']->value }}</td>
                 </tr>
+                <tr>
+                  <th>Versi Kunci</th>
+                  <td>{{ $config['versi_kunci'] ? $config['versi_kunci']->value.$config['versi_kunci']->updated_at : 'Belum Dibuat' }}</td>
+                </tr>
             </table>
           </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <h5>Manajemen Kunci</h5>
-        </div>
-        <div class="card-body">
-          <div class="buttons">
-            <a href="{{ route('crypto.generate') }}" class="btn btn-icon icon-left btn-primary" ><i class="far fa-edit"></i> Buat</a>
-          </div>
-          <div class="table-responsive">
-            <table class="table table-striped" id="tabel">
-              <thead>                                 
-                <tr>
-                  <th class="text-center">No.</th>
-                  <th>Kunci</th>
-                  <th>Nama file</th>
-                  <th>Created At</th>
-                  <th>Updated At</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>                                 
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 </section>

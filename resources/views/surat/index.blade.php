@@ -46,7 +46,7 @@
                   <div class="form-group col-6">
                       <label>Jenis Surat</label>
                       <select name="jenis_surat" class="form-control" required>
-                        <option value="" selected="" disabled="">Pilih</option>
+                        <option value="" selected="" disabled="">--Pilih--</option>
                         <option value="surat undangan">Surat Undangan</option>
                         <option value="surat perintah">Surat Perintah</option>
                       </select>
@@ -63,6 +63,27 @@
                   </div>
                 </div>
                 <div class="row">
+                  <div class="form-group col-6">
+                    <label>Tujuan</label>
+                    <select name="tujuan" id="tujuan" class="form-control">
+                      <option value="" selected="" disabled="true">--Pilih--</option>
+                      <?php foreach($list_opd as $lo):?>
+                      <option value="{{ $lo->id }}">{{ $lo->nama_opd }}</option>
+                      <?php endforeach ?>
+                    </select>
+                    <div class="invalid-feedback">
+                        Data tidak boleh kosong !
+                    </div>
+                  </div>
+                  <div class="form-group col-6">
+                    <label>Gambar</label>
+                    <input type="file" name="gambar" class="form-control" required multiple>
+                    <div class="invalid-feedback">
+                        Data tidak boleh kosong !
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
                   <div class="form-group col-12">
                     <label>Deskripsi</label>
                     <textarea name="deskripsi" class="form-control" required placeholder="Deskripsi"></textarea>
@@ -71,15 +92,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="form-group col-12">
-                    <label>Gambar</label>
-                    <input type="file" name="gambar" class="form-control" required multiple>
-                    <div class="invalid-feedback">
-                        Data tidak boleh kosong !
-                    </div>
-                  </div>
-                </div>
+
                 <div class="row">
                     <div class="form-group col-12">
                         <button class="btn btn-primary btn-block">Simpan</button>

@@ -8,8 +8,7 @@
   <ul class="sidebar-menu">
     <li class="menu-header">Dashboard</li>
     <li class="{{ request()->is('/dashboard/*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('dashboard') }}"><i class="fa fa-rocket"></i> <span>Dashboard</span></a></li>
-    <li><a class="nav-link" href="{{ route('upload-surat') }}"><i class="fa fa-file-upload"></i> <span>Upload Surat</span></a></li>
-    <li><a class="nav-link" href="{{ route('kirim-surat') }}"><i class="fa fa-paper-plane"></i> <span>Kirim Surat</span></a></li>
+    <li><a class="nav-link" href="{{ route('upload-surat') }}"><i class="fa fa-paper-plane"></i> <span>Kirim Surat</span></a></li>
     <li><a class="nav-link" href="{{ route('surat-masuk') }}"><i class="fa fa-file-alt"></i> <span>Cek Surat</span></a></li>
     <li class="menu-header">Admin</li>
     <li><a class="nav-link" href="{{ route('config') }}"><i class="fa fa-cog"></i> <span>Konfigurasi OPD</span></a></li>

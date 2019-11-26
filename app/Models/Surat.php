@@ -12,6 +12,7 @@ class Surat extends Model
         'perihal_surat',
         'tgl_surat',
         'pengirim',
+        'tujuan',
         'jenis_surat',
         'deskripsi',
         'gambar'

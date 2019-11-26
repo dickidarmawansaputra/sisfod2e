@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/sapa', function (Request $request) {
+    return "ada apa ya ".$request->nama_opd;
 });
+
+Route::post('ambil-surat', 'SuratController@ambilSurat')->name('ambil-surat');
+

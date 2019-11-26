@@ -15,8 +15,18 @@ class ConfigController extends Controller
         $config['alamat_jaringan'] = Config::where('parameter','alamat_jaringan')->first();
         $config['alamat_pos'] = Config::where('parameter','alamat_pos')->first();
         $config['email'] = Config::where('parameter','email')->first();
+        $config['server_config_status'] = Config::where('parameter','server_config_status')->first();
+        $config['versi_kunci'] = Config::where('parameter','versi_kunci')->first();
+        if ($config['nama_opd'] && $config['alamat_jaringan'] && $config['alamat_pos'] && $config['email']) {
+        	return view('config.index',['config'=>$config]);
+        } elseif(!$config['nama_opd'] && !$config['alamat_jaringan'] && !$config['alamat_pos'] && !$config['email']) {
+            toast('Anda belum melakukan konfigurasi Server','warning');
+            return redirect()->route('config.create');
+        } else {
+            toast('Konfigurasi server anda belum lengkap','warning');
+            return redirect()->route('config.edit');
+        }
 
-    	return view('config.index',['config'=>$config]);
 	}
 
     public function create()
@@ -41,17 +51,45 @@ class ConfigController extends Controller
 
     public function store(Request $request)
     {
-        // $data = $request->all();
 
-        Config::create(['parameter'=>$request->parameter,'value'=>$request->value,'descriptions'=>$request->descriptions]);
+        $request->validate([
+            'nama_opd' => 'required',
+            'alamat_pos' => 'required',
+            'email' => 'required',
+        ]);
+        Config::create(['parameter'=>'nama_opd','value'=>$request->nama_opd,'descriptions'=>'Berisikan nama opd atau instansi']);
+        Config::create(['parameter'=>'alamat_jaringan','value'=>explode('/',url()->current())[2],'descriptions'=>'Alamat server container beserta dengan Portnya']);
+        Config::create(['parameter'=>'alamat_pos','value'=>$request->alamat_pos,'descriptions'=>'Alamat instansi yang dapat dihubungi via Pos']);
+        Config::create(['parameter'=>'email','value'=>$request->email,'descriptions'=>'Alamat email instansi']);
+        Config::create(['parameter'=>'server_config_status','value'=>'pending','descriptions'=>'Status Konfigurasi Server OPD [0: pending, 1: tervalidasi, 2:tertolak]']);
+
+        $data = [
+            'nama_opd'=>$request->nama_opd,
+            'alamat_jaringan'=>explode('/',url()->current())[2],
+            'alamat_pos'=>$request->alamat_pos,
+            'deskripsi'=>'dari server',
+        ];
+        # Create a connection
+        $ch = curl_init(config('custom.suandi_server').'opd');
+        # Form data string
+        $postString = http_build_query($data, '', '&');
+        # Setting our options
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # Get the response
+        $response = json_decode(curl_exec($ch));
+        curl_close($ch);
+        Config::create(['parameter'=>'id_opd','value'=>$response->id,'descriptions'=>'ID dari OPD']);
+
         toast('Data berhasil ditambahkan','success');
-        return redirect()->back();
+        return redirect()->route('config');
+
     }
 
     public function edit()
     {
         $config['nama_opd'] = Config::where('parameter','nama_opd')->first();
-        $config['alamat_jaringan'] = Config::where('parameter','alamat_jaringan')->first();
         $config['alamat_pos'] = Config::where('parameter','alamat_pos')->first();
         $config['email'] = Config::where('parameter','email')->first();
         return view('config.edit',['config'=>$config]);
@@ -61,9 +99,28 @@ class ConfigController extends Controller
     {
         $data = $request->all();
         Config::where('parameter', 'nama_opd')->update(['value' => $request->nama_opd]);
-        Config::where('parameter', 'alamat_jaringan')->update(['value' => $request->alamat_jaringan]);
+        Config::where('parameter', 'alamat_jaringan')->update(['value' => explode('/',url()->current())[2]]);
         Config::where('parameter', 'alamat_pos')->update(['value' => $request->alamat_pos]);
         Config::where('parameter', 'email')->update(['value' => $request->email]);
+        $id_opd = Config::where('parameter','id_opd')->first();
+
+        $data = [
+            'nama_opd'=>$request->nama_opd,
+            'alamat_jaringan'=>explode('/',url()->current())[2],
+            'alamat_pos'=>$request->alamat_pos,
+            'deskripsi'=>'dari server',
+        ];
+        # Create a connection
+        $ch = curl_init(config('custom.suandi_server').'opd/'.$id_opd->value);
+        # Form data string
+        $postString = http_build_query($data, '', '&');
+        # Setting our options
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # Get the response
+        $response = json_decode(curl_exec($ch));
+        curl_close($ch);
         toast('Data berhasil diedit','success');
         return redirect()->route('config');
     }

@@ -17,7 +17,7 @@ Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
 
 Route::middleware('auth')->group(function() {
-	// Route::view('dashboard', 'app.dashboard')->name('dashboard')->middleware('role:admin');
+	Route::view('dashboard', 'app.dashboard')->name('dashboard');
 	Route::view('home', 'app.dashboard')->name('dashboard');
 	
 	Route::get('upload-surat', 'SuratController@index')->name('upload-surat');
@@ -51,4 +51,5 @@ Route::middleware('auth')->group(function() {
 	Route::post('user/destroy/{id}', 'UserController@destroy')->name('user.destroy');
 
 	Route::get('crypto/generate', 'CryptoController@createKey')->name('crypto.generate');
+	Route::get('crypto', 'CryptoController@index')->name('crypto');
 });
