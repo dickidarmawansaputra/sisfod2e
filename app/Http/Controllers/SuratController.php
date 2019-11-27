@@ -34,10 +34,8 @@ class SuratController extends Controller
         if ($request->hasFile('gambar')) {
             // Fingerprint
             $fingerprint = md5_file($request->gambar);
-
             // Create fingerprint text file
             $info = pathinfo($request->gambar->getClientOriginalName());
-
             // Simpan gambar di storage
             $fileName = $request->gambar->getClientOriginalName();
             $path = $request->file('gambar')->storeAs($random_name, $random_name.'.'.$info['extension']);
@@ -48,13 +46,10 @@ class SuratController extends Controller
         $data['tujuan'] = $server_tujuan->nama_opd;
         $data['pengirim'] = Config::where('parameter','nama_opd')->first()->value;
 
-
         $publickey = Storage::disk('ftp')->get($server_tujuan->nama_kunci_public);
 
         // RSA
         $rsa = new \phpseclib\Crypt\RSA();
-
-
 
         // // Enkripsi RSA dengan private key dan fingerprint
         $rsa->loadKey($publickey);
@@ -70,10 +65,7 @@ class SuratController extends Controller
         $hasil = $zipper->make(storage_path('app/surat/'.$random_name.'.letter'))->add($files);
         $zipper->close();
 
-   
-
         // Dapatkan zip file baru dikirim
-
         $filezip = Storage::url('app/'.$random_name.'.letter');
 
         if ($filezip) {
@@ -84,7 +76,6 @@ class SuratController extends Controller
     	Surat::create($data);
 
         // kirim pesan ke database tujuan
-
         $ch = curl_init(config('custom.suandi_server').'surat/'.$request->tujuan);
         # Form data string
         $postString = http_build_query($data, '', '&');
@@ -104,10 +95,15 @@ class SuratController extends Controller
 
     public function kirimSurat()
     {
-        $config = Config::all();
+
+
+
         return view('surat.kirim', compact('config'));
     }
 
+    /**
+     * Untuk mensupport indexsuratmasuk
+     */
     public function dataKirim()
     {
         $model = Surat::all();
@@ -124,32 +120,20 @@ class SuratController extends Controller
             ->make(true);
     }
 
-    public function kirim(Request $request)
-    {
-        $ftp = Config::find($request->tujuan)->first();
-        config(['filesystems.disks.ftp.host' => $ftp->host]);
-        config(['filesystems.disks.ftp.username' => $ftp->username]);
-        config(['filesystems.disks.ftp.password' => $ftp->password]);
-        config(['filesystems.disks.ftp.root' => $ftp->root_path]);
-        $host = config('filesystems.disks.ftp.host');
-        $username = config('filesystems.disks.ftp.username');
-        $password = config('filesystems.disks.ftp.password');
-        $root = config('filesystems.disks.ftp.root');
-        $url = str_replace("/storage", "storage", Storage::disk('local')->url($request->surat));
-        $path = Storage::disk('ftp')->put($request->surat, fopen($url, 'r+'));
-
-
-        toast('Surat berhasil dikirim','success');
-        return redirect()->back();
-
-    }
-
-    // surat masuk
-
     public function indexSuratMasuk()
     {
         $config = Config::all();
         return view('surat.cek', compact('config'));
+    }
+
+    public function unduhGambar($id)
+    {
+        $random_name = date('Ymdhis').Str::random(32);
+        $surat = Surat::find($id);
+        $gambar = Storage::disk('ftp')->get(explode('.',($surat->gambar)[0]);
+        $simpanan = Storage::disk('local')->put($random_name.'xxx.letter', $digital_signature);
+        return response()->download($simpanan);
+
     }
 
     public function dataSuratMasuk()
@@ -161,7 +145,7 @@ class SuratController extends Controller
                 return '
                 
 
-                <button class="btn btn-icon btn-success btn-sm" data-toggle="modal" data-target="#unduh" data-id="'.$model->id.'"><i class="fas fa-download" desabled></i></button>
+                <a href='.route('surat.unduh-gambar',['id'=>$model->id]).' class="btn btn-icon btn-success btn-sm" data-id="'.$model->id.'"><i class="fas fa-download" desabled></i></a>
                 
                 <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#detail"  data-id="'.$model->id.'" data-no_surat="'.$model->no_surat.'" data-perihal_surat="'.$model->perihal_surat.'" data-jenis_surat="'.$model->jenis_surat.'" data-deskripsi="'.$model->deskripsi.'" data-pengirim="'.$model->pengirim.'" data-tujuan="'.$model->tujuan.'"><i class="fas fa-eye"></i></button>';
             })
@@ -170,26 +154,12 @@ class SuratController extends Controller
             ->make(true);
     }
 
-    // update keterangan surat
-    public function update(Request $request)
-    {
-        $data = $request->all();
-        $result = Surat::find($request->id)->update($data);
-        toast('Data Keterangan Surat Berhasil diedit','success');
-        return redirect()->back();
-    }
-
-    // hapus surat
-    public function destroy($id)
-    {
-        Surat::find($id)->delete();
-        return redirect()->back();
-    }
-
+    /**
+     * Untuk mempush data surat dari server suandi
+     */
     public function ambilSurat(Request $request)
     {
-        // $message['header'] = "Apa kabarmu";
-        // $message['body'] = "Ibu, semoga kelak kita bertemu kembali di surga Allah";
+
         $message['status'] = "Sukses";
         $message['no_surat'] = $request->no_surat;
         $message['perihal_surat'] = $request->perihal_surat;

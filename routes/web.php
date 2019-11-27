@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function() {
 	
 	Route::get('upload-surat', 'SuratController@index')->name('upload-surat');
 	Route::post('upload-surat/simpan', 'SuratController@store')->name('upload-surat.store');
+	Route::get('upload-surat/unduh-gambar/{id}', 'SuratController@unduhGambar')->name('surat.unduh-gambar');
 	// Route::post('upload-surat/simpan', 'SuratController@kirim')->name('upload-surat.store');
 
 	Route::get('kirim-surat', 'SuratController@kirimSurat')->name('kirim-surat');
