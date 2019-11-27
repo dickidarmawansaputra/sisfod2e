@@ -130,7 +130,7 @@ class SuratController extends Controller
     {
         $random_name = date('Ymdhis').Str::random(32);
         $surat = Surat::find($id);
-        $gambar = Storage::disk('ftp')->get(explode('.',($surat->gambar)[0]);
+        $gambar = Storage::disk('ftp')->get(explode('.',($surat->gambar)[0]));
         $simpanan = Storage::disk('local')->put($random_name.'xxx.letter', $digital_signature);
         return response()->download($simpanan);
 
