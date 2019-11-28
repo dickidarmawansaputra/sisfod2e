@@ -134,22 +134,28 @@ class SuratController extends Controller
 	   $nama_surat = explode('.',($surat->gambar))[0];
        $gambar = Storage::disk('ftp')->get(explode('/',$nama_surat)[0].'.letter');
        $simpanan = Storage::disk('local')->put($random_name.'.letter', $gambar);
-	$file_zip = new \Chumper\Zipper\Zipper;	
+	   $file_zip = new \Chumper\Zipper\Zipper;	
        $file_zip->make(storage_path('app/'.$random_name.'.letter'))->extractTo(storage_path('app/'.'dir'.$random_name));
        $gambar_asli = Storage::disk('local')->get('dir'.$random_name.'/'.explode('/',$surat->gambar)[1]);
 
        $fingerprint = md5_file(storage_path('app/'.'dir'.$random_name.'/'.explode('/',$surat->gambar)[1]));
-       echo $fingerprint;
-       echo "\n sign : \n";
+       $fingerprint;
+
         $rsa = new \phpseclib\Crypt\RSA();
 
         $private_key = Storage::disk('local')->get('private_key.pem');
         $digisign = Storage::disk('local')->get('dir'.$random_name.'/maris.dig');
 
         $rsa->loadKey($private_key);
-        echo $rsa->decrypt($digisign);
-        //$simpanan = Storage::disk('public')->put($random_name.'.letter', $gambar);
-       // return response()->download('temp/'.$random_name.'.letter');
+        $str_digisign =  $rsa->decrypt($digisign);
+
+        if ($fingerprint == $str_digisign) {
+            $simpanan = Storage::disk('public')->put($random_name.'.letter', $gambar);
+            return response()->download('temp/'.$random_name.'.letter');
+        } else {
+            toast('Gambar yang akan anda download tidak valid','warning');
+            return redirect()->back();
+        }
     }
 
     public function dataSuratMasuk()
