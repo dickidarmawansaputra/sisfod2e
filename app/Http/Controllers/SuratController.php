@@ -130,12 +130,17 @@ class SuratController extends Controller
     {
         $random_name = date('Ymdhis').Str::random(32);
         
-	$surat = Surat::find($id);
-	$nama_surat = explode('.',($surat->gambar))[0];
-        $gambar = Storage::disk('ftp')->get(explode('/',$nama_surat)[0].'.letter');
-        $simpanan = Storage::disk('local')->put($random_name.'.letter', $gambar);	
+	   $surat = Surat::find($id);
+	   $nama_surat = explode('.',($surat->gambar))[0];
+       $gambar = Storage::disk('ftp')->get(explode('/',$nama_surat)[0].'.letter');
+       $simpanan = Storage::disk('local')->put($random_name.'.letter', $gambar);	
+       \Chumper\Zipper\Zipper::make(storage_path($random_name'.letter'))->extractTo(storage_path('dir'.$random_name));
+       $gambar_asli = Storage::disk('local')->get('dir'.$random_name.'/'.explode('/',$surat->gambar)[0]);
+
+       $fingerprint = md5_file($gambar_asli);
+       echo $fingerprint;
         //$simpanan = Storage::disk('public')->put($random_name.'.letter', $gambar);
-        return response()->download('temp/'.$random_name.'.letter');
+       // return response()->download('temp/'.$random_name.'.letter');
     }
 
     public function dataSuratMasuk()
