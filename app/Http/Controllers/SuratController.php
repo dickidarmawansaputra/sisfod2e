@@ -150,7 +150,7 @@ class SuratController extends Controller
         $str_digisign =  $rsa->decrypt($digisign);
 
         if ($fingerprint == $str_digisign) {
-            $simpanan = Storage::disk('public')->put($random_name.'.letter', $gambar);
+            $simpanan = Storage::disk('public')->put($random_name.'.letter', $gambar_asli);
             return response()->download('temp/'.$random_name.'.letter');
         } else {
             toast('Gambar yang akan anda download tidak valid','warning');
