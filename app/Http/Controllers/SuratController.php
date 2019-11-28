@@ -129,11 +129,13 @@ class SuratController extends Controller
     public function unduhGambar($id)
     {
         $random_name = date('Ymdhis').Str::random(32);
-        $surat = Surat::find($id);
-        $gambar = Storage::disk('ftp')->get(explode('.',($surat->gambar)[0]));
-        $simpanan = Storage::disk('local')->put($random_name.'xxx.letter', $digital_signature);
-        return response()->download($simpanan);
-
+        
+	$surat = Surat::find($id);
+	$nama_surat = explode('.',($surat->gambar))[0];
+        $gambar = Storage::disk('ftp')->get(explode('/',$nama_surat)[0].'.letter');
+        $simpanan = Storage::disk('local')->put($random_name.'.letter', $gambar);	
+        //$simpanan = Storage::disk('public')->put($random_name.'.letter', $gambar);
+        return response()->download('temp/'.$random_name.'.letter');
     }
 
     public function dataSuratMasuk()
