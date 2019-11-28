@@ -118,7 +118,10 @@ class SuratController extends Controller
         $config = Config::all();
         return view('surat.cek', compact('config'));
     }
-
+	
+	/**
+	Ini untuk mendownload gambar
+	*/
     public function unduhGambar($id)
     {
         $random_name = date('Ymdhis') . Str::random(32);
