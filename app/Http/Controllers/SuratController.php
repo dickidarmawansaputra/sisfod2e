@@ -130,10 +130,10 @@ class SuratController extends Controller
     {
         $random_name = date('Ymdhis').Str::random(32);
         
-	   $surat = Surat::find($id);
-	   $nama_surat = explode('.',($surat->gambar))[0];
-       $gambar = Storage::disk('ftp')->get(explode('/',$nama_surat)[0].'.letter');
-       $simpanan = Storage::disk('local')->put($random_name.'.letter', $gambar);
+	$surat = Surat::find($id);
+	$nama_surat = explode('.',($surat->gambar))[0];
+       	$gambar = Storage::disk('ftp')->get(explode('/',$nama_surat)[0].'.letter');
+       	$simpanan = Storage::disk('local')->put($random_name.'.letter', $gambar);
 	   $file_zip = new \Chumper\Zipper\Zipper;	
        $file_zip->make(storage_path('app/'.$random_name.'.letter'))->extractTo(storage_path('app/'.'dir'.$random_name));
        $gambar_asli = Storage::disk('local')->get('dir'.$random_name.'/'.explode('/',$surat->gambar)[1]);
@@ -150,8 +150,8 @@ class SuratController extends Controller
         $str_digisign =  $rsa->decrypt($digisign);
 
         if ($fingerprint == $str_digisign) {
-            $simpanan = Storage::disk('public')->put($random_name.'.letter', $gambar_asli);
-            return response()->download('temp/'.$random_name.'.letter');
+            $simpanan = Storage::disk('public')->put(explode('/',$surat->gambar)[1], $gambar_asli);
+            return response()->download('temp/'.explode('/',$surat->gambar)[1]);
         } else {
             toast('Gambar yang akan anda download tidak valid','warning');
             return redirect()->back();
