@@ -132,7 +132,7 @@ class SuratController extends Controller
         $gambar_asli = Storage::disk('local')->get('dir' . $random_name . '/' . explode('/', $surat->gambar)[1]);
 
         $fingerprint = md5_file(storage_path('app/' . 'dir' . $random_name . '/' . explode('/', $surat->gambar)[1]));
-        $fingerprint;
+
 
         $rsa = new \phpseclib\Crypt\RSA();
 
