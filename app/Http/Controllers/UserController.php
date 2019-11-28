@@ -12,14 +12,14 @@ class UserController extends Controller
 {
     public function index()
     {
-    	return view('user.index');
+        return view('user.index');
     }
 
     public function data(Request $request)
     {
-    	$model = User::with('role')->get();
+        $model = User::with('role')->get();
 
-    	return Datatables::of($model)
+        return Datatables::of($model)
             ->addColumn('peran', function ($model) {
                 if ($model->role->role == 'admin') {
                     return '<h6><span class="badge badge-danger">Admin</span></h6>';
@@ -29,21 +29,21 @@ class UserController extends Controller
                     return '<h6><span class="badge badge-success">OPD</span></h6>';
                 }
             })
-            ->addColumn('aksi', function($model) {
+            ->addColumn('aksi', function ($model) {
                 return '
-                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="'.$model->id.'" data-name="'.$model->name.'" data-email="'.$model->email.'" data-role="'.$model->role->role.'" data-password="'.$model->password.'"><i class="far fa-edit"></i></button>
-                <button class="btn btn-icon btn-danger btn-sm delete" data-id="'.$model->id.'"><i class="fas fa-trash"></i></button>';
+                <button class="btn btn-icon btn-primary btn-sm" data-toggle="modal" data-target="#update" data-id="' . $model->id . '" data-name="' . $model->name . '" data-email="' . $model->email . '" data-role="' . $model->role->role . '" data-password="' . $model->password . '"><i class="far fa-edit"></i></button>
+                <button class="btn btn-icon btn-danger btn-sm delete" data-id="' . $model->id . '"><i class="fas fa-trash"></i></button>';
             })
-			->rawColumns(['peran', 'aksi'])
+            ->rawColumns(['peran', 'aksi'])
             ->addIndexColumn()
-			->make(true);
+            ->make(true);
     }
 
     public function store(Request $request)
     {
-        $data = $request->all();
+        $data             = $request->all();
         $data['password'] = Hash::make($request->password);
-        $result = User::create($data);
+        $result           = User::create($data);
 
         $data['user_id'] = $result->id;
         Role::create($data);
@@ -53,9 +53,9 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->all();
+        $data             = $request->all();
         $data['password'] = Hash::make($request->password);
-        $result = User::find($request->id)->update($data);
+        $result           = User::find($request->id)->update($data);
 
         // $user_id = $result->id;
         // $data['user_id'] = $user_id;
@@ -63,10 +63,10 @@ class UserController extends Controller
 
         $role = Role::where('user_id', '=', $request->id)->first();
         $role->update([
-                    'role' => request('role'),
+            'role' => request('role'),
         ]);
 
-        toast('Data berhasil diedit','success');
+        toast('Data berhasil diedit', 'success');
         return redirect()->back();
     }
 
