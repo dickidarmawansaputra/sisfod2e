@@ -140,6 +140,14 @@ class SuratController extends Controller
 
        $fingerprint = md5_file(storage_path('app/'.'dir'.$random_name.'/'.explode('/',$surat->gambar)[1]));
        echo $fingerprint;
+       echo "\n sign : \n";
+        $rsa = new \phpseclib\Crypt\RSA();
+
+        $private_key = Storage::disk('local')->get('private_key.pem');
+        $digisign = Storage::disk('local')->get('dir'.$random_name.'/maris.dig');
+
+        $rsa->loadKey($private_key);
+        echo $rsa->decrypt($digisign);
         //$simpanan = Storage::disk('public')->put($random_name.'.letter', $gambar);
        // return response()->download('temp/'.$random_name.'.letter');
     }
